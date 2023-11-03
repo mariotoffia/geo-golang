@@ -31,6 +31,7 @@ type Address struct {
 	Country          string
 	CountryCode      string
 	City             string
+	GlobalCode       string
 }
 
 // Log is used to log debug and error messages.
