@@ -131,12 +131,13 @@ func response(ctx context.Context, url string, obj ResponseParser) error {
 	}
 
 	body := strings.Trim(string(data), " []")
-	DebugLogger.Printf("Received response: %s\n", body)
+	Log.Debug(ctx, "Received response: %s", body)
 	if body == "" {
+		Log.Info(ctx, "Empty response")
 		return nil
 	}
 	if err := json.Unmarshal([]byte(body), obj); err != nil {
-		ErrLogger.Printf("Error unmarshalling response: %s\n", err.Error())
+		Log.Error(ctx, "Error unmarshalling response: %s", err.Error())
 		return err
 	}
 

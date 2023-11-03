@@ -3,8 +3,6 @@ package geo
 
 import (
 	"context"
-	"io"
-	"log"
 )
 
 // Geocoder can look up (lat, long) by address and address by (lat, long)
@@ -35,13 +33,19 @@ type Address struct {
 	City             string
 }
 
-// ErrLogger is an implementation of StdLogger that geo uses to log its error messages.
-var ErrLogger StdLogger = log.New(io.Discard, "[Geo][Err]", log.LstdFlags)
+// Log is used to log debug and error messages.
+var Log Logger = NullLogger{}
 
-// DebugLogger is an implementation of StdLogger that geo uses to log its debug messages.
-var DebugLogger StdLogger = log.New(io.Discard, "[Geo][Debug]", log.LstdFlags)
-
-// StdLogger is a interface for logging libraries.
-type StdLogger interface {
-	Printf(string, ...interface{})
+// Logger is used to log debug and error messages.
+type Logger interface {
+	Debug(context.Context, string, ...any)
+	Info(context.Context, string, ...any)
+	Error(context.Context, string, ...any)
 }
+
+// NullLogger is a logger that does nothing.
+type NullLogger struct{}
+
+func (NullLogger) Debug(context.Context, string, ...any) {}
+func (NullLogger) Info(context.Context, string, ...any)  {}
+func (NullLogger) Error(context.Context, string, ...any) {}

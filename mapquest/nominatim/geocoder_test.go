@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/mapquest/nominatim"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/mapquest/nominatim"
 	"github.com/stretchr/testify/assert"
 )
 

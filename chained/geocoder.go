@@ -3,7 +3,7 @@ package chained
 import (
 	"context"
 
-	"github.com/codingsince1985/geo-golang"
+	"github.com/mariotoffia/geo-golang"
 )
 
 type chainedGeocoder struct{ Geocoders []geo.Geocoder }

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/chained"
-	"github.com/codingsince1985/geo-golang/data"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/chained"
+	"github.com/mariotoffia/geo-golang/data"
 	"github.com/stretchr/testify/assert"
 )
 

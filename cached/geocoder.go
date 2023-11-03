@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/codingsince1985/geo-golang"
+	"github.com/mariotoffia/geo-golang"
 	"github.com/patrickmn/go-cache"
 )
 

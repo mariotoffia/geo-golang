@@ -2,8 +2,9 @@ package baidu
 
 import (
 	"fmt"
-	"github.com/codingsince1985/geo-golang"
 	"strings"
+
+	"github.com/mariotoffia/geo-golang"
 )
 
 var (

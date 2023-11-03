@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	geo "github.com/codingsince1985/geo-golang"
+	geo "github.com/mariotoffia/geo-golang"
 )
 
 var token = os.Getenv("ARCGIS_TOKEN")
