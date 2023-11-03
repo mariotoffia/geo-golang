@@ -1,6 +1,7 @@
 package baidu_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -19,7 +20,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := baidu.Geocoder(key, "en", "bd09ll", ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC")
 
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: 40.05703033345938, Lng: 116.3084202915042}, *location)
@@ -30,7 +31,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := baidu.Geocoder(key, "en", "bd09ll", ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(40.03333340036988, 116.29999999999993)
+	address, err := geocoder.ReverseGeocode(context.TODO(), 40.03333340036988, 116.29999999999993)
 
 	assert.NoError(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "43号 农大南路, Haidian, Beijing, China"))
@@ -42,7 +43,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := baidu.Geocoder(key, "en", "bd09ll", ts.URL+"/")
-	addr, err := geocoder.ReverseGeocode(-37.81375, 164.97176)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.81375, 164.97176)
 
 	assert.NoError(t, err)
 	assert.Nil(t, addr)

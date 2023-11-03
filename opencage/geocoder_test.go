@@ -1,6 +1,7 @@
 package opencage_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -22,7 +23,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := opencage.Geocoder(key, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC 3000")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC 3000")
 	assert.Nil(t, err)
 	assert.InDelta(t, -37.8154176, location.Lat, locDelta)
 	assert.InDelta(t, 144.9665563, location.Lng, locDelta)
@@ -33,7 +34,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := opencage.Geocoder(key, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.8154176, 144.9665563)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.8154176, 144.9665563)
 	assert.NoError(t, err)
 	assert.True(t, strings.Index(address.FormattedAddress, "Collins St") > 0)
 }
@@ -43,7 +44,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := opencage.Geocoder(key, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.8154176, 164.9665563)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.8154176, 164.9665563)
 	assert.Nil(t, err)
 	assert.Nil(t, address)
 }
@@ -53,7 +54,7 @@ func TestReverseGeocodeUsingSuburbAsLocality(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := opencage.Geocoder(key, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.8154176, 164.9665563)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.8154176, 164.9665563)
 	assert.Nil(t, err)
 	assert.NotNil(t, address)
 	assert.Equal(t, "Lütten Klein", address.City)

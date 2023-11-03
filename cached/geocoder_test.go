@@ -1,6 +1,7 @@
 package cached_test
 
 import (
+	"context"
 	"strings"
 	"testing"
 	"time"
@@ -39,19 +40,19 @@ var (
 )
 
 func TestGeocode(t *testing.T) {
-	location, err := geocoder.Geocode("64 Elizabeth Street, Melbourne, Victoria 3000, Australia")
+	location, err := geocoder.Geocode(context.TODO(), "64 Elizabeth Street, Melbourne, Victoria 3000, Australia")
 	assert.NoError(t, err)
 	assert.Equal(t, locationFixture, *location)
 }
 
 func TestReverseGeocode(t *testing.T) {
-	address, err := geocoder.ReverseGeocode(locationFixture.Lat, locationFixture.Lng)
+	address, err := geocoder.ReverseGeocode(context.TODO(), locationFixture.Lat, locationFixture.Lng)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasSuffix(address.FormattedAddress, "Melbourne, Victoria 3000, Australia"))
 }
 
 func TestReverseGeocodeWithNoResult(t *testing.T) {
-	addr, err := geocoder.ReverseGeocode(1, 2)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), 1, 2)
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }
@@ -69,17 +70,17 @@ func TestCachedGeocode(t *testing.T) {
 
 	c := cached.Geocoder(mock1, geoCache)
 
-	l, err := c.Geocode("42, Some Street, Austin, Texas")
+	l, err := c.Geocode(context.TODO(), "42, Some Street, Austin, Texas")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: 1, Lng: 2}, *l)
 
 	// Should be cached
 	// TODO: write a mock Cache impl to test cache is being used
-	l, err = c.Geocode("42, Some Street, Austin, Texas")
+	l, err = c.Geocode(context.TODO(), "42, Some Street, Austin, Texas")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: 1, Lng: 2}, *l)
 
-	addr, err := c.Geocode("NOWHERE,TX")
+	addr, err := c.Geocode(context.TODO(), "NOWHERE,TX")
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }

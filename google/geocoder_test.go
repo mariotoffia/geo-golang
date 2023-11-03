@@ -1,6 +1,7 @@
 package google_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -19,7 +20,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := google.Geocoder(token, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC 3000")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC 3000")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: -37.8137683, Lng: 144.9718448}, *location)
 }
@@ -29,7 +30,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := google.Geocoder(token, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.8137683, 144.9718448)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.8137683, 144.9718448)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "60 Collins St"))
 	assert.True(t, strings.HasPrefix(address.Street, "Collins St"))
@@ -41,7 +42,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := google.Geocoder(token, ts.URL+"/")
-	addr, err := geocoder.ReverseGeocode(-37.8137683, 164.9718448)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.8137683, 164.9718448)
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }

@@ -1,6 +1,7 @@
 package chained_test
 
 import (
+	"context"
 	"strings"
 	"testing"
 
@@ -39,19 +40,19 @@ var (
 )
 
 func TestGeocode(t *testing.T) {
-	location, err := geocoder.Geocode(addressFixture.FormattedAddress)
+	location, err := geocoder.Geocode(context.TODO(), addressFixture.FormattedAddress)
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{locationFixture.Lat, locationFixture.Lng}, *location)
 }
 
 func TestReverseGeocode(t *testing.T) {
-	address, err := geocoder.ReverseGeocode(locationFixture.Lat, locationFixture.Lng)
+	address, err := geocoder.ReverseGeocode(context.TODO(), locationFixture.Lat, locationFixture.Lng)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasSuffix(address.FormattedAddress, "Melbourne, Victoria 3000, Australia"))
 }
 
 func TestReverseGeocodeWithNoResult(t *testing.T) {
-	addr, err := geocoder.ReverseGeocode(0, 0)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), 0, 0)
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }
@@ -73,15 +74,15 @@ func TestChainedGeocode(t *testing.T) {
 
 	c := chained.Geocoder(mock1, mock2)
 
-	l, err := c.Geocode("Austin,TX")
+	l, err := c.Geocode(context.TODO(), "Austin,TX")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: 1, Lng: 2}, *l)
 
-	l, err = c.Geocode("Dallas,TX")
+	l, err = c.Geocode(context.TODO(), "Dallas,TX")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: 3, Lng: 4}, *l)
 
-	addr, err := c.Geocode("NOWHERE,TX")
+	addr, err := c.Geocode(context.TODO(), "NOWHERE,TX")
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }

@@ -1,6 +1,7 @@
 package locationiq
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,7 +13,7 @@ func TestGeocodeYieldsResult(t *testing.T) {
 	defer ts.Close()
 
 	gc := Geocoder("foobar", 18, ts.URL+"/")
-	l, err := gc.Geocode("Seidlstraße 26, 80335 München")
+	l, err := gc.Geocode(context.TODO(), "Seidlstraße 26, 80335 München")
 
 	expLat := 48.1453641
 	expLon := 11.5582083
@@ -35,7 +36,7 @@ func TestGeocodeYieldsNoResult(t *testing.T) {
 	defer ts.Close()
 
 	gc := Geocoder("foobar", 18, ts.URL+"/")
-	l, err := gc.Geocode("Seidlstraße 26, 80335 München")
+	l, err := gc.Geocode(context.TODO(), "Seidlstraße 26, 80335 München")
 
 	if l != nil {
 		t.Errorf("Expected nil, got %#v", l)
@@ -51,7 +52,7 @@ func TestReverseGeocodeYieldsResult(t *testing.T) {
 	defer ts.Close()
 
 	gc := Geocoder("foobar", 18, ts.URL+"/")
-	addr, err := gc.ReverseGeocode(48.1453641, 11.5582083)
+	addr, err := gc.ReverseGeocode(context.TODO(), 48.1453641, 11.5582083)
 
 	if err != nil {
 		t.Errorf("Expected nil error, got %v", err)
@@ -66,7 +67,7 @@ func TestReverseGeocodeYieldsNoResult(t *testing.T) {
 	defer ts.Close()
 
 	gc := Geocoder("foobar", 18, ts.URL+"/")
-	addr, err := gc.ReverseGeocode(48.1453641, 11.5582083)
+	addr, err := gc.ReverseGeocode(context.TODO(), 48.1453641, 11.5582083)
 
 	if err == nil {
 		t.Error("Expected error, got nil")

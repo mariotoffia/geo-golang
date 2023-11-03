@@ -1,6 +1,7 @@
 package arcgis
 
 import (
+	"context"
 	"math"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +19,7 @@ func TestGeocode(t *testing.T) {
 
 	address := "380 New York, Redlands, CA 92373, USA"
 	geocoder := Geocoder(token, ts.URL)
-	loc, err := geocoder.Geocode(address)
+	loc, err := geocoder.Geocode(context.TODO(), address)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +45,7 @@ func TestReverseGeocode(t *testing.T) {
 	lat := 34.056488119308924
 	lng := -117.1956703176181
 	geocoder := Geocoder(token, ts.URL)
-	addr, err := geocoder.ReverseGeocode(lat, lng)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), lat, lng)
 	if err != nil {
 		t.Error(err)
 	}

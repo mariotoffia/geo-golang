@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -215,13 +216,13 @@ func ExampleGeocoder() {
 }
 
 func try(geocoder geo.Geocoder) {
-	location, _ := geocoder.Geocode(addr)
+	location, _ := geocoder.Geocode(context.TODO(), addr)
 	if location != nil {
 		fmt.Printf("%s location is (%.6f, %.6f)\n", addr, location.Lat, location.Lng)
 	} else {
 		fmt.Println("got <nil> location")
 	}
-	address, _ := geocoder.ReverseGeocode(lat, lng)
+	address, _ := geocoder.ReverseGeocode(context.TODO(), lat, lng)
 	if address != nil {
 		fmt.Printf("Address of (%.6f,%.6f) is %s\n", lat, lng, address.FormattedAddress)
 		fmt.Printf("Detailed address: %#v\n", address)
@@ -232,13 +233,13 @@ func try(geocoder geo.Geocoder) {
 }
 
 func tryOnlyFRData(geocoder geo.Geocoder) {
-	location, _ := geocoder.Geocode(addrFR)
+	location, _ := geocoder.Geocode(context.TODO(), addrFR)
 	if location != nil {
 		fmt.Printf("%s location is (%.6f, %.6f)\n", addrFR, location.Lat, location.Lng)
 	} else {
 		fmt.Println("got <nil> location")
 	}
-	address, _ := geocoder.ReverseGeocode(latFR, lngFR)
+	address, _ := geocoder.ReverseGeocode(context.TODO(), latFR, lngFR)
 	if address != nil {
 		fmt.Printf("Address of (%.6f,%.6f) is %s\n", latFR, lngFR, address.FormattedAddress)
 		fmt.Printf("Detailed address: %#v\n", address)

@@ -1,6 +1,8 @@
 package data
 
 import (
+	"context"
+
 	"github.com/codingsince1985/geo-golang"
 )
 
@@ -25,7 +27,7 @@ func Geocoder(addressToLocation AddressToLocation, LocationToAddress LocationToA
 }
 
 // Geocode returns location for address
-func (d dataGeocoder) Geocode(address string) (*geo.Location, error) {
+func (d dataGeocoder) Geocode(ctx context.Context, address string) (*geo.Location, error) {
 	addr := geo.Address{
 		FormattedAddress: address,
 	}
@@ -37,7 +39,7 @@ func (d dataGeocoder) Geocode(address string) (*geo.Location, error) {
 }
 
 // ReverseGeocode returns address for location
-func (d dataGeocoder) ReverseGeocode(lat, lng float64) (*geo.Address, error) {
+func (d dataGeocoder) ReverseGeocode(ctx context.Context, lat, lng float64) (*geo.Address, error) {
 	if address, ok := d.LocationToAddress[geo.Location{Lat: lat, Lng: lng}]; ok {
 		return &address, nil
 	}

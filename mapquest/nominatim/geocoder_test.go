@@ -1,6 +1,7 @@
 package nominatim_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -19,7 +20,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := nominatim.Geocoder(key, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC 3000")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC 3000")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: -37.8137433689794, Lng: 144.971745104488}, *location)
 }
@@ -29,7 +30,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := nominatim.Geocoder(key, ts.URL+"/")
-	addr, err := geocoder.ReverseGeocode(-37.8137433689794, 144.971745104488)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.8137433689794, 144.971745104488)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasPrefix(addr.FormattedAddress, "Reserve Bank of Australia"))
 
@@ -37,7 +38,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts2.Close()
 
 	geocoder = nominatim.Geocoder(key, ts2.URL+"/")
-	addr, err = geocoder.ReverseGeocode(43.0280986, -78.8136961)
+	addr, err = geocoder.ReverseGeocode(context.TODO(), 43.0280986, -78.8136961)
 	assert.NoError(t, err)
 	assert.Equal(t, "Audubon Industrial Park", addr.City)
 }
@@ -48,7 +49,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 
 	geocoder := nominatim.Geocoder(key, ts.URL+"/")
 	//geocoder := nominatim.Geocoder(key)
-	addr, err := geocoder.ReverseGeocode(-37.8137433689794, 164.971745104488)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.8137433689794, 164.971745104488)
 	assert.NotNil(t, err)
 	assert.Nil(t, addr)
 }

@@ -1,6 +1,7 @@
 package frenchapigouv_test
 
 import (
+	"context"
 	"strings"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	location, err := geocoder.Geocode("Champ de Mars, 5 Avenue Anatole France, 75007 Paris")
+	location, err := geocoder.Geocode(context.TODO(), "Champ de Mars, 5 Avenue Anatole France, 75007 Paris")
 	assert.Nil(t, err)
 	assert.Equal(t, geo.Location{Lat: 48.859831, Lng: 2.328123}, *location)
 }
@@ -27,7 +28,7 @@ func TestGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	location, err := geocoder.Geocode("nowhere")
+	location, err := geocoder.Geocode(context.TODO(), "nowhere")
 	assert.Nil(t, err)
 	assert.Nil(t, location)
 }
@@ -37,7 +38,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	address, err := geocoder.ReverseGeocode(48.859831, 2.328123)
+	address, err := geocoder.ReverseGeocode(context.TODO(), 48.859831, 2.328123)
 	assert.Nil(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "5, Quai Anatole France,"))
 	assert.Equal(t, "Île-de-France", address.State)
@@ -48,7 +49,7 @@ func TestReverseGeocodeWithTypeStreet(t *testing.T) {
 	ts := testServer(responseStreet)
 	defer ts.Close()
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	address, err := geocoder.ReverseGeocode(50.720114, 3.156717)
+	address, err := geocoder.ReverseGeocode(context.TODO(), 50.720114, 3.156717)
 	assert.Nil(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "Rue des Anges,"))
 	assert.Equal(t, "Hauts-de-France", address.State)
@@ -59,7 +60,7 @@ func TestReverseGeocodeWithTypeLocality(t *testing.T) {
 	ts := testServer(responseLocality)
 	defer ts.Close()
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	address, err := geocoder.ReverseGeocode(44.995637, 1.646584)
+	address, err := geocoder.ReverseGeocode(context.TODO(), 44.995637, 1.646584)
 	assert.Nil(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "Route de Saint Denis les Martel (Les Quatre-Routes-du-Lot),"))
 	assert.Equal(t, "Occitanie", address.State)
@@ -71,7 +72,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	addr, err := geocoder.ReverseGeocode(0, 0.34)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), 0, 0.34)
 	assert.Nil(t, addr)
 	assert.Nil(t, err)
 }
@@ -81,7 +82,7 @@ func TestReverseGeocodeWithNoResultByDefaultPoints(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := frenchapigouv.GeocoderWithURL(ts.URL + "/")
-	addr, err := geocoder.ReverseGeocode(0, 0)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), 0, 0)
 	assert.Nil(t, addr)
 	assert.Nil(t, err)
 }

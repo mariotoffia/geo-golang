@@ -1,6 +1,8 @@
 package chained
 
 import (
+	"context"
+
 	"github.com/codingsince1985/geo-golang"
 )
 
@@ -10,10 +12,10 @@ type chainedGeocoder struct{ Geocoders []geo.Geocoder }
 func Geocoder(geocoders ...geo.Geocoder) geo.Geocoder { return chainedGeocoder{Geocoders: geocoders} }
 
 // Geocode returns location for address
-func (c chainedGeocoder) Geocode(address string) (*geo.Location, error) {
+func (c chainedGeocoder) Geocode(ctx context.Context, address string) (*geo.Location, error) {
 	// Geocode address by each geocoder until we get a real location response
 	for i := range c.Geocoders {
-		if l, err := c.Geocoders[i].Geocode(address); err == nil && l != nil {
+		if l, err := c.Geocoders[i].Geocode(ctx, address); err == nil && l != nil {
 			return l, nil
 		}
 		// skip error and try the next geocoder
@@ -24,10 +26,10 @@ func (c chainedGeocoder) Geocode(address string) (*geo.Location, error) {
 }
 
 // ReverseGeocode returns address for location
-func (c chainedGeocoder) ReverseGeocode(lat, lng float64) (*geo.Address, error) {
+func (c chainedGeocoder) ReverseGeocode(ctx context.Context, lat, lng float64) (*geo.Address, error) {
 	// Geocode address by each geocoder until we get a real location response
 	for i := range c.Geocoders {
-		if addr, err := c.Geocoders[i].ReverseGeocode(lat, lng); err == nil && addr != nil {
+		if addr, err := c.Geocoders[i].ReverseGeocode(ctx, lat, lng); err == nil && addr != nil {
 			return addr, nil
 		}
 		// skip error and try the next geocoder
