@@ -1,13 +1,14 @@
 package geocod
 
 import (
+	"context"
 	"math"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
-	geo "github.com/codingsince1985/geo-golang"
+	geo "github.com/mariotoffia/geo-golang"
 )
 
 var key = os.Getenv("GECOD_API_KEY")
@@ -18,7 +19,7 @@ func TestGeocode(t *testing.T) {
 
 	address := "1109 N Highland St, Arlington VA"
 	geocoder := Geocoder(key, ts.URL)
-	loc, err := geocoder.Geocode(address)
+	loc, err := geocoder.Geocode(context.TODO(), address)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +45,7 @@ func TestReverseGeocode(t *testing.T) {
 	lat := 38.886665
 	lng := -77.094733
 	geocoder := Geocoder(key, ts.URL)
-	addr, err := geocoder.ReverseGeocode(lat, lng)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), lat, lng)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,14 +1,15 @@
 package bing_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/bing"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/bing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +20,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := bing.Geocoder(key, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC")
 
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: -37.81375, Lng: 144.97176}, *location)
@@ -30,7 +31,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := bing.Geocoder(key, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.81375, 144.97176)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.81375, 144.97176)
 
 	assert.NoError(t, err)
 	assert.True(t, strings.Index(address.FormattedAddress, "Collins St") > 0)
@@ -41,7 +42,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := bing.Geocoder(key, ts.URL+"/")
-	addr, err := geocoder.ReverseGeocode(-37.81375, 164.97176)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.81375, 164.97176)
 
 	assert.NoError(t, err)
 	assert.Nil(t, addr)

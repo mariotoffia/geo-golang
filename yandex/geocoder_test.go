@@ -1,14 +1,15 @@
 package yandex_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/yandex"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/yandex"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +20,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := yandex.Geocoder(token, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC 3000")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC 3000")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: -37.816939, Lng: 144.961515}, *location)
 }
@@ -29,7 +30,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := yandex.Geocoder(token, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(37.816939, 144.961515)
+	address, err := geocoder.ReverseGeocode(context.TODO(), 37.816939, 144.961515)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "Victoria, City of Melbourne, Collins Street"))
 	assert.True(t, strings.HasPrefix(address.Street, "Collins Street"))
@@ -40,7 +41,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := yandex.Geocoder(token, ts.URL+"/")
-	addr, err := geocoder.ReverseGeocode(-37.8137683, 164.9718448)
+	addr, err := geocoder.ReverseGeocode(context.TODO(), -37.8137683, 164.9718448)
 	assert.Nil(t, err)
 	assert.Nil(t, addr)
 }

@@ -1,14 +1,15 @@
 package here_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/here"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/here"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +21,7 @@ func TestGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := here.Geocoder(appID, appCode, 100, ts.URL+"/")
-	location, err := geocoder.Geocode("60 Collins St, Melbourne VIC 3000")
+	location, err := geocoder.Geocode(context.TODO(), "60 Collins St, Melbourne VIC 3000")
 	assert.NoError(t, err)
 	assert.Equal(t, geo.Location{Lat: -37.81375, Lng: 144.97176}, *location)
 }
@@ -30,7 +31,7 @@ func TestReverseGeocode(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := here.Geocoder(appID, appCode, 100, ts.URL+"/")
-	address, err := geocoder.ReverseGeocode(-37.81375, 144.97176)
+	address, err := geocoder.ReverseGeocode(context.TODO(), -37.81375, 144.97176)
 	assert.NoError(t, err)
 	assert.True(t, strings.HasPrefix(address.FormattedAddress, "56-64 Collins St"))
 }
@@ -40,7 +41,7 @@ func TestReverseGeocodeWithNoResult(t *testing.T) {
 	defer ts.Close()
 
 	geocoder := here.Geocoder(appID, appCode, 100, ts.URL+"/")
-	addr, _ := geocoder.ReverseGeocode(-37.81375, 164.97176)
+	addr, _ := geocoder.ReverseGeocode(context.TODO(), -37.81375, 164.97176)
 	assert.Nil(t, addr)
 }
 

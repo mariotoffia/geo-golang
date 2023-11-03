@@ -1,28 +1,29 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	"github.com/codingsince1985/geo-golang"
-	"github.com/codingsince1985/geo-golang/arcgis"
-	"github.com/codingsince1985/geo-golang/baidu"
-	"github.com/codingsince1985/geo-golang/bing"
-	"github.com/codingsince1985/geo-golang/chained"
-	"github.com/codingsince1985/geo-golang/frenchapigouv"
-	"github.com/codingsince1985/geo-golang/geocod"
-	"github.com/codingsince1985/geo-golang/google"
-	"github.com/codingsince1985/geo-golang/here"
-	"github.com/codingsince1985/geo-golang/locationiq"
-	"github.com/codingsince1985/geo-golang/mapbox"
-	"github.com/codingsince1985/geo-golang/mapquest/nominatim"
-	"github.com/codingsince1985/geo-golang/mapquest/open"
-	"github.com/codingsince1985/geo-golang/mapzen"
-	"github.com/codingsince1985/geo-golang/opencage"
-	"github.com/codingsince1985/geo-golang/openstreetmap"
-	"github.com/codingsince1985/geo-golang/pickpoint"
-	"github.com/codingsince1985/geo-golang/tomtom"
-	"github.com/codingsince1985/geo-golang/yandex"
+	"github.com/mariotoffia/geo-golang"
+	"github.com/mariotoffia/geo-golang/arcgis"
+	"github.com/mariotoffia/geo-golang/baidu"
+	"github.com/mariotoffia/geo-golang/bing"
+	"github.com/mariotoffia/geo-golang/chained"
+	"github.com/mariotoffia/geo-golang/frenchapigouv"
+	"github.com/mariotoffia/geo-golang/geocod"
+	"github.com/mariotoffia/geo-golang/google"
+	"github.com/mariotoffia/geo-golang/here"
+	"github.com/mariotoffia/geo-golang/locationiq"
+	"github.com/mariotoffia/geo-golang/mapbox"
+	"github.com/mariotoffia/geo-golang/mapquest/nominatim"
+	"github.com/mariotoffia/geo-golang/mapquest/open"
+	"github.com/mariotoffia/geo-golang/mapzen"
+	"github.com/mariotoffia/geo-golang/opencage"
+	"github.com/mariotoffia/geo-golang/openstreetmap"
+	"github.com/mariotoffia/geo-golang/pickpoint"
+	"github.com/mariotoffia/geo-golang/tomtom"
+	"github.com/mariotoffia/geo-golang/yandex"
 )
 
 const (
@@ -215,13 +216,13 @@ func ExampleGeocoder() {
 }
 
 func try(geocoder geo.Geocoder) {
-	location, _ := geocoder.Geocode(addr)
+	location, _ := geocoder.Geocode(context.TODO(), addr)
 	if location != nil {
 		fmt.Printf("%s location is (%.6f, %.6f)\n", addr, location.Lat, location.Lng)
 	} else {
 		fmt.Println("got <nil> location")
 	}
-	address, _ := geocoder.ReverseGeocode(lat, lng)
+	address, _ := geocoder.ReverseGeocode(context.TODO(), lat, lng)
 	if address != nil {
 		fmt.Printf("Address of (%.6f,%.6f) is %s\n", lat, lng, address.FormattedAddress)
 		fmt.Printf("Detailed address: %#v\n", address)
@@ -232,13 +233,13 @@ func try(geocoder geo.Geocoder) {
 }
 
 func tryOnlyFRData(geocoder geo.Geocoder) {
-	location, _ := geocoder.Geocode(addrFR)
+	location, _ := geocoder.Geocode(context.TODO(), addrFR)
 	if location != nil {
 		fmt.Printf("%s location is (%.6f, %.6f)\n", addrFR, location.Lat, location.Lng)
 	} else {
 		fmt.Println("got <nil> location")
 	}
-	address, _ := geocoder.ReverseGeocode(latFR, lngFR)
+	address, _ := geocoder.ReverseGeocode(context.TODO(), latFR, lngFR)
 	if address != nil {
 		fmt.Printf("Address of (%.6f,%.6f) is %s\n", latFR, lngFR, address.FormattedAddress)
 		fmt.Printf("Detailed address: %#v\n", address)

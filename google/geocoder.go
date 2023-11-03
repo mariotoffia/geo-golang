@@ -4,13 +4,18 @@ package google
 
 import (
 	"fmt"
+	"strings"
 
-	"github.com/codingsince1985/geo-golang"
+	"github.com/mariotoffia/geo-golang"
 )
 
 type (
 	baseURL         string
 	geocodeResponse struct {
+		PlusCode *struct {
+			CompoundCode string `json:"compound_code"`
+			GlobalCode   string `json:"global_code"`
+		} `json:"plus_code,omitempty"`
 		Results []struct {
 			FormattedAddress  string                   `json:"formatted_address"`
 			AddressComponents []googleAddressComponent `json:"address_components"`
@@ -38,6 +43,7 @@ const (
 	componentTypeState         = "administrative_area_level_1"
 	componentTypeCountry       = "country"
 	componentTypePostcode      = "postal_code"
+	componentTypePostalTown    = "postal_town"
 )
 
 // Geocoder constructs Google geocoder
@@ -72,6 +78,28 @@ func (r *geocodeResponse) Location() (*geo.Location, error) {
 }
 
 func (r *geocodeResponse) Address() (*geo.Address, error) {
+	if r.Status == statusNoResults && r.PlusCode != nil && r.PlusCode.CompoundCode != "" {
+		// We got a plus code, lets extract "city/locality" and "country" from compound code.
+		//
+		// compound code is on format: "global_code" "city/locality", "country".
+		fistSpace := strings.Index(r.PlusCode.CompoundCode, " ")
+		if fistSpace == -1 {
+			return nil, nil
+		}
+
+		parts := strings.Split(r.PlusCode.CompoundCode[fistSpace+1:], ",")
+		if len(parts) < 2 {
+			return nil, nil
+		}
+
+		return &geo.Address{
+			Country: strings.TrimSpace(parts[1]),
+			// We interpret it as "city"
+			City:       strings.TrimSpace(parts[0]),
+			GlobalCode: r.PlusCode.GlobalCode,
+		}, nil
+	}
+
 	if r.Status == statusNoResults {
 		return nil, nil
 	} else if r.Status != statusOK {
@@ -91,6 +119,11 @@ func parseGoogleResult(r *geocodeResponse) *geo.Address {
 	addr := &geo.Address{}
 	res := r.Results[0]
 	addr.FormattedAddress = res.FormattedAddress
+
+	if r.PlusCode != nil {
+		addr.GlobalCode = r.PlusCode.GlobalCode
+	}
+
 OuterLoop:
 	for _, comp := range res.AddressComponents {
 		for _, typ := range comp.Types {
@@ -106,6 +139,11 @@ OuterLoop:
 				continue OuterLoop
 			case componentTypeLocality:
 				addr.City = comp.LongName
+				continue OuterLoop
+			case componentTypePostalTown:
+				if addr.City == "" {
+					addr.City = comp.LongName
+				}
 				continue OuterLoop
 			case componentTypeStateDistrict:
 				addr.StateDistrict = comp.LongName
